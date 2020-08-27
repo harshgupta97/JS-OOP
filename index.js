@@ -1,31 +1,11 @@
-// const circle = {
-//     radius: 1,
-//     location: {
-//         x: 1,
-//         y: 1
-//     },
-//     draw: function () {
-//         console.log('Draw');
-//     }
-// }
-
-function createCircle(radius) {
-    return {
-        radius,
-        draw: function () {
-            console.log('Create circle function.');
-        }
-    }
-}
-
-const circle = createCircle(1);
-
 function Circle(radius) {
+    // Instance member
     this.radius = radius;
+    this.move = function () {
+        this.draw();
+        console.log('move');
+    }
     let defaultLocation = { x: 0, y: 0 };
-    this.draw = function () {
-        console.log('Draw');
-    };
     Object.defineProperty(this, 'defaultLocation', {
         get: function () {
             return defaultLocation;
@@ -39,39 +19,54 @@ function Circle(radius) {
     });
 }
 
-const another = new Circle(1);
+// Prototype member
+Circle.prototype.draw = function () {
+    console.log('Draw');
+}
 
-const Circle1 = new Function('radius', `
-this.radius = radius;
-    this.draw = function () {
-        console.log('Draw');
-    }
-`);
+Circle.prototype.toString = function () {
+    return 'Circle has radius ' + this.radius;
+}
 
-const circle1 = new Circle1(1);
+const circle = new Circle(1);
+const c1 = new Circle(1);
+const c2 = new Circle(2);
 
+// Object.keys will only return instance memnber
+console.log(Object.keys(circle));
 
-for (let key in another) {
+// for in loop returns all members (instance + prototype)
+for (let key in circle)
+    console.log(key);
+
+// Don't modify the objects you don't own
+/*
+Array.prototype.shuffle = function () {
+    //...
+}
+
+cosnt array = [];
+array.shuffle();
+*/
+
+for (let key in circle) {
     if (typeof circle[key] === 'function')
         console.log(key, circle[key])
 }
 
-const keys = Object.keys(another);
-console.log(keys);
+const person = { name: "Harsh" };
+Object.defineProperty(person, 'name', {
+    writable: false,
+    enumerable: false,
+})
 
-if ('radius' in another)
-    console.log('Circle has radius');
+person.name = "Jhon";
+console.log(person);
 
-x = { value: 20 };
-y = x;
+for (let key in person)
+    console.log(key);
 
-x.value = 10;
+console.log(Object.keys(person));
+const object = Object.getPrototypeOf(person);
 
-let number = { value: 10 };
-
-function increase(number) {
-    number.value++;
-}
-
-increase(number);
-console.log(number);
+console.log(Object.getOwnPropertyDescriptor(object, 'toString'));
