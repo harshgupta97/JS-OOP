@@ -1,5 +1,15 @@
-function Circle(radius) {
+function Shape(color) {
+    this.color = color;
+}
+
+Shape.prototype.duplicate = function () {
+    console.log('duplicate');
+}
+
+function Circle(radius, color) {
     // Instance member
+    // Calling super constructor
+    Shape.call(this, color)
     this.radius = radius;
     this.move = function () {
         this.draw();
@@ -19,6 +29,17 @@ function Circle(radius) {
     });
 }
 
+// Circle.prototype = Object.create(Object.prototype);  Implicit
+
+// Circle.prototype.constructor = Circle;
+// new Circle.prototype.constructor() => new Circle();
+
+Circle.prototype = Object.create(Shape.prototype);
+
+// Whenever you reset the protype of an object, you should also reset the constructor.
+// Resetting the constructor
+Circle.prototype.constructor = Circle;
+
 // Prototype member
 Circle.prototype.draw = function () {
     console.log('Draw');
@@ -28,45 +49,5 @@ Circle.prototype.toString = function () {
     return 'Circle has radius ' + this.radius;
 }
 
-const circle = new Circle(1);
-const c1 = new Circle(1);
-const c2 = new Circle(2);
-
-// Object.keys will only return instance memnber
-console.log(Object.keys(circle));
-
-// for in loop returns all members (instance + prototype)
-for (let key in circle)
-    console.log(key);
-
-// Don't modify the objects you don't own
-/*
-Array.prototype.shuffle = function () {
-    //...
-}
-
-cosnt array = [];
-array.shuffle();
-*/
-
-for (let key in circle) {
-    if (typeof circle[key] === 'function')
-        console.log(key, circle[key])
-}
-
-const person = { name: "Harsh" };
-Object.defineProperty(person, 'name', {
-    writable: false,
-    enumerable: false,
-})
-
-person.name = "Jhon";
-console.log(person);
-
-for (let key in person)
-    console.log(key);
-
-console.log(Object.keys(person));
-const object = Object.getPrototypeOf(person);
-
-console.log(Object.getOwnPropertyDescriptor(object, 'toString'));
+const circle = new Circle(1, 'red');
+const shape = new Shape();
